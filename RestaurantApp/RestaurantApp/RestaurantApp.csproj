@@ -245,7 +245,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\JwtHelper.cs" />
-    <Compile Include="Filters\JwtAuthFilter.cs" />
+    <Compile Include="Attributes\JwtAuthFilterAttribute.cs" />
     <Compile Include="Migrations\AppMigrations\202503120743150_InitialApp.cs" />
     <Compile Include="Migrations\AppMigrations\202503120743150_InitialApp.Designer.cs">
       <DependentUpon>202503120743150_InitialApp.cs</DependentUpon>

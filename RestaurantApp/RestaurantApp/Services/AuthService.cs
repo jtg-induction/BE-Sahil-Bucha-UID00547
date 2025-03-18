@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
-using RestaurantApp.Helpers;
 using RestaurantApp.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using RestaurantApp.Data;
 using RestaurantApp.DTOs;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
+using RestaurantApp.Helpers;
 
 namespace RestaurantApp.Services
 {
@@ -54,7 +54,7 @@ namespace RestaurantApp.Services
                 FullName = user.FullName,
                 Role = roles[0],
                 Email = user.Email,
-                Token = new JwtSecurityTokenHandler().WriteToken(JwtHelper.GenerateToken(user, roles[0])),
+                Token = JwtHelper.GenerateToken(user, roles[0]),
             };
             return (validUser, null);
         }

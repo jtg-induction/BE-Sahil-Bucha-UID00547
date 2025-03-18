@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
-using HttpPutAttribute = System.Web.Http.HttpPutAttribute;
+using HttpPatchAttribute = System.Web.Http.HttpPatchAttribute;
 using RouteAttribute = System.Web.Http.RouteAttribute;
 using RoutePrefixAttribute = System.Web.Http.RoutePrefixAttribute;
 
@@ -34,13 +35,32 @@ namespace RestaurantApp.Controllers
         }
 
 
-        [JwtAuthFilter]
+        [JwtAuthFilter("owner")]
         [Route("restaurant/{restaurantId:int}")]
         [HttpGet]
         public async Task<IHttpActionResult> GetOrders(int restaurantId, int? status = null, string sortBy = "", string username = "")
         {
             try
             {
+                var identity = User.Identity as ClaimsIdentity;
+                Debug.WriteLine(identity);
+
+                //if (identity == null || !identity.IsAuthenticated)
+                //{
+                //    return Unauthorized();
+                //}
+
+                // 🔹 Extract User ID from Claims
+                var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
+                Debug.WriteLine(userIdClaim);
+                //if (userIdClaim == null)
+                //{
+                //    return Unauthorized();
+                //}
+
+                string userId = userIdClaim.Value;
+                Debug.WriteLine(userId);
+                //return Ok(new { Message = "User is authenticated", UserId = userId });
 
                 //Debug.WriteLine("good one : ", httpContext.User.Identity.Name);
                 Debug.WriteLine("here we are ");
@@ -59,20 +79,20 @@ namespace RestaurantApp.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         [Route("update/{orderId:int}")]
         public async Task<IHttpActionResult> UpdateOrderStatus(int orderId, [FromBody] int status)
 
         {
             try
             {
-                Console.WriteLine("here");
+                Debug.WriteLine("here", status);
                 await _orderService.UpdateOrderStatus(orderId, status);
                 return Ok("Order status updated.");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(e);
                 return BadRequest($"Not able to update the status {e}");
             }
         }
